@@ -16,3 +16,8 @@ content-type: application/json
 
 ###
 DELETE http://localhost:3000/cursos/2
+
+###
+
+GET http://localhost:3000/cursos/2 HTTP/1.1
+
