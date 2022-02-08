@@ -7,6 +7,26 @@
     {
       "id": 2,
       "nome": "Ionic"
+    },
+    {
+      "nome": "Java Script",
+      "id": 3
+    },
+    {
+      "nome": "Flutter",
+      "id": 4
+    },
+    {
+      "nome": "Material 2",
+      "id": 5
+    },
+    {
+      "nome": "Matreial 3",
+      "id": 6
+    },
+    {
+      "nome": "Material 4",
+      "id": 7
     }
   ]
 }
