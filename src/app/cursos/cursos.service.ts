@@ -21,8 +21,13 @@ export class CursosService {
     );
   }
 
+  loadByID(id: any) {
+    return this.http.get(`${this.API}/${id}`).pipe(take(1)); //api pega API/cursos - como vamos pegar apenas uma vez utilizamos o pipe take 1 - queremos ir no servidor apenas uma vez e voltar e finalizar o observable para não precisar do unsubscribe, não repetir o request caso dê errado (por isso o take(1))
+  }
 
   create(curso: any) {
     return this.http.post(this.API, curso).pipe(take(1));
   }
+
+
 }
