@@ -26,7 +26,7 @@ export class CursosFormComponent implements OnInit {
 
   ngOnInit(): void {
 
-    let registro = null;
+    // let registro = null;
 
     // this.route.params.subscribe( //código assíncrono
     //   (params: any) => {
@@ -40,31 +40,32 @@ export class CursosFormComponent implements OnInit {
     //   }
     // );
 
-    this.route.params
-    .pipe(
-      map((params: any) => params['id']),
-      switchMap(id => this.service.loadByID(id)), //switchMap cancela as requisições anteriores e devolve o valor do último pedido
-      // switchMap(cursos => obterAulas) -> caso precisássemos pegar as aulas do curso
-    )
-    .subscribe( curso => this.updateForm(curso)); // nesse exemplo estamos indo ao servidor e buscando dados
+    // this.route.params
+    // .pipe(
+    //   map((params: any) => params['id']),
+    //   switchMap(id => this.service.loadByID(id)), //switchMap cancela as requisições anteriores e devolve o valor do último pedido
+    //   // switchMap(cursos => obterAulas) -> caso precisássemos pegar as aulas do curso
+    // )
+    // .subscribe( curso => this.updateForm(curso)); // nesse exemplo estamos indo ao servidor e buscando dados
 
     // concatMap -> ordem da requisição importa
     // mergeMap -> ordem não importa
     // exhaustMap -> faz a requisição e obter a resposta antes de partir para segunda tentativa (aula 129) comum em casos de login
 
+    const curso = this.route.snapshot.data['curso'];
 
     this.form = this.fb.group({
-      id: [null],
-      nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(250)]]
+      id: [curso.id],
+      nome: [curso.nome, [Validators.required, Validators.minLength(3), Validators.maxLength(250)]]
     })
   }
 
-  updateForm(curso: any) {
-    this.form.patchValue({
-      id: curso.id,
-      nome: curso.nome
-    })
-  }
+  // updateForm(curso: any) {
+  //   this.form.patchValue({
+  //     id: curso.id,
+  //     nome: curso.nome
+  //   })
+  // }
 
   hasError(field: string){
     return this.form.get(field)?.enable
@@ -75,14 +76,49 @@ export class CursosFormComponent implements OnInit {
     console.log(this.form.value);
     if (this.form.valid) {
       console.log('submit');
-      this.service.create(this.form.value).subscribe(
+
+
+      let msgSucesss = 'Curso criado com sucesso';
+      let msgErro = 'Erro ao criar curso, tente novamente';
+
+      if (this.form.value.id) {
+        msgSucesss = 'Curso atualizado com sucesso';
+        msgErro = 'Erro ao criar curso, tente novamente';
+
+      }
+
+      this.service.save(this.form.value).subscribe(
         success => {
-          this.modal.showAlertSuccess('Criado com sucesso');
+          this.modal.showAlertSuccess(msgSucesss);
           this.location.back();
         },
-        error => this.modal.showAlertDanger('Erro ao criar curso!'),
-        () => console.log('request completo')
+        error => {
+          this.modal.showAlertDanger(msgErro)
+        }
       );
+
+      /*if (this.form.value.id) {
+        //se o curso value id existe - fazemos o update
+        this.service.update(this.form.value).subscribe(
+          success => {
+            this.modal.showAlertSuccess('Atualziado com sucesso');
+            this.location.back();
+          },
+          error => this.modal.showAlertDanger('Erro ao atualziar curso!'),
+          () => console.log('update completo')
+        );
+
+      } else{ //caso não exista: criamos
+        this.service.create(this.form.value).subscribe(
+          success => {
+            this.modal.showAlertSuccess('Criado com sucesso');
+            this.location.back();
+          },
+          error => this.modal.showAlertDanger('Erro ao criar curso!'),
+          () => console.log('request completo')
+        );
+      } */
+
     }
   }
 
